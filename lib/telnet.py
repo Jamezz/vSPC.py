@@ -291,6 +291,10 @@ class TelnetServer(FixedTelnet):
         self.send_buffer += s
         if IAC in self.send_buffer:
             self.send_buffer = self.send_buffer.replace(IAC, IAC+IAC)
+        
+        nbytes = self.sock.send(self.send_buffer)
+        self.send_buffer = self.send_buffer[nbytes:]
+
         return len(self.send_buffer) > 0
 
 class VMExtHandler:
