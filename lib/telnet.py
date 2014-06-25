@@ -124,6 +124,8 @@ class FixedTelnet(Telnet):
             while self.rawq:
                 c = self.rawq_getchar()
                 if not self.iacseq:
+                    if c == theNULL:
+                        continue
                     if c == "\021":
                         continue
                     if c != IAC:
@@ -292,7 +294,7 @@ class TelnetServer(FixedTelnet):
         if IAC in self.send_buffer:
             self.send_buffer = self.send_buffer.replace(IAC, IAC+IAC)
         
-        nbytes = self.sock.send(self.send_buffer)
+        nbytes = self.sock.sendall(self.send_buffer)
         self.send_buffer = self.send_buffer[nbytes:]
 
         return len(self.send_buffer) > 0
