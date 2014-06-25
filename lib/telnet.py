@@ -124,8 +124,6 @@ class FixedTelnet(Telnet):
             while self.rawq:
                 c = self.rawq_getchar()
                 if not self.iacseq:
-                    if c == theNULL:
-                        continue
                     if c == "\021":
                         continue
                     if c != IAC:
