@@ -124,8 +124,6 @@ class FixedTelnet(Telnet):
             while self.rawq:
                 c = self.rawq_getchar()
                 if not self.iacseq:
-                    if self.sb == 0 and c == theNULL:
-                        continue
                     if self.sb == 0 and c == "\021":
                         continue
                     if c != IAC:
@@ -291,8 +289,8 @@ class TelnetServer(FixedTelnet):
 
     def send_buffered(self, s = ''):
         self.send_buffer += s
-        nbytes = self.sock.send(self.send_buffer)
-        self.send_buffer = self.send_buffer[nbytes:]
+        if IAC in self.send_buffer:
+            self.send_buffer = self.send_buffer.replace(IAC, IAC+IAC)
         return len(self.send_buffer) > 0
 
 class VMExtHandler:
